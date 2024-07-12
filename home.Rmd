@@ -1,0 +1,51 @@
+---
+title: " "
+output:
+  html_document:
+  css: styles.css
+---
+
+```{css, echo=FALSE}
+body {
+  font-family: 'Verdana', sans-serif;
+}
+
+#footer {
+position: fixed;
+left: 0;
+bottom: 0;
+width: 100%;
+background-color: #f2f2f2; /* You can change the background color */
+  color: black; /* Text color */
+  text-align: center;
+padding: 10px 0;
+font-size: 0.9em;
+}
+
+```
+
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+
+![](Photo/home.png)
+
+<br>
+
+## Welcome to Sangho’s case study for Belkin’s eCommerce Data Analyst interview hiring process!
+
+<br>
+
+I explored eCommerce analytics with a case study on Belkin’s performance on the Amazon Marketplace. Using the provided data, I analyzed Belkin’s metrics to offer actionable insights, focusing on key indicators for revenue growth, investment opportunities, and recommendations for improvement. Additionally, I demonstrated these insights through an interactive dashboard and discussed strategies for automating data processing on this website.
+
+<br>
+
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+
+::: {#footer}
+```{r echo=FALSE, results='asis'}
+cat("Copyright © 2024-", format(Sys.Date(), "%Y"), "Sangho Lee, All rights reserved.")
+```
+:::

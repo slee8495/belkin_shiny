@@ -1,0 +1,37 @@
+---
+title: " "
+output:
+  html_document:
+  css: styles.css
+---
+
+```{css, echo=FALSE}
+body {
+  font-family: 'Verdana', sans-serif;
+}
+
+
+
+```
+
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+
+## Data for the case study
+
+#### Data Dictionary:
+
+- Week ending: Ending date of a 7 day week
+- asin : Product Identification Number
+- orderedRevenueAmount: Revenue from that of the product
+- orderedUnits: Units sold of the product
+- ASP: Selling Price
+- Category: Identified category
+- subcategory: Identified sub category
+- Marketing spend: $ spent on marketing
+- Views: # views on the product
+
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------

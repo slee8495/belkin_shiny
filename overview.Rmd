@@ -1,0 +1,46 @@
+---
+title: " "
+output:
+  html_document:
+  css: styles.css
+---
+
+```{css, echo=FALSE}
+body {
+  font-family: 'Verdana', sans-serif;
+}
+
+
+
+```
+
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+
+# Case Study
+
+<br> 
+
+### Key Questions to answer
+
+#### The Amazon team at Belkin is tasked with growing sell through or revenue on Amazon
+1. What key metrics would you propose to monitor over time to define the success of the team’s efforts in improving the revenue and why? Clearly define your metric(s) and explain how each is computed.
+
+2. What areas/products should we invest to increase revenue. What Products are doing well and what could be improved? ​ ​Propose 2-3 specific recommendations that could address these opportunities. Demonstrate rationale behind each recommendation
+
+3. How would you visually story tell the recommendations via a dashboard could you produce visual evidence or statistical evidence of your conclusions/recommendations?
+
+4. Please add visualizations please use a tool of your choice like python/Tableau/R and paste screenshots.
+
+
+
+### Bonus Question
+
+1. If you could use free version of Tableau and give a link that would be great
+
+2. How would you think of automation of this raw data in a tool of your choice before feeding it to a visualization tool
+
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
