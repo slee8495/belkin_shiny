@@ -41,7 +41,7 @@ To proceed, let's first examine the data.
 ::::
 
 ```{r, warning=FALSE, message=FALSE}
-belkin_data <- read_excel("belkin_data.xlsx")
+belkin_data <- readRDS("belkin_data.rds")
 belkin_data %>% 
   janitor::clean_names() %>% 
   dplyr::mutate(week_ending = as.Date(week_ending)) -> belkin_data

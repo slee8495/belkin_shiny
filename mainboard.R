@@ -5,9 +5,10 @@ library(DT)
 library(rmarkdown)
 library(shinyjs)
 library(readxl)
+library(knitr)
 
 # Define the path to your Excel file
-excel_file_path <- "/Users/stanlee/Desktop/Desktop - Sangho’s MacBook Pro/Belkin/Case Study/belkin_shiny/belkin_data.xlsx"
+excel_file_path <- "belkin_data.rds"
 
 ui <- fluidPage(
   theme = shinythemes::shinytheme("flatly"),
@@ -107,18 +108,18 @@ server <- function(input, output, session) {
   
   ############################################################################################################################
   
-  observeEvent(input$main_nav, {
-    if(input$main_nav == "data") {
-      rendered_html <- rmarkdown::render("data.Rmd", output_dir = "www", output_file = "data.html")
-      active_tab(input$main_nav)
-    }
-  })
-  
-  output$data_html <- renderUI({
-    if (active_tab() == "data") {
-      tags$iframe(src = "data.html", style = "width:100%; height:400px;")
-    }
-  })
+  # observeEvent(input$main_nav, {
+  #   if(input$main_nav == "data") {
+  #     rendered_html <- rmarkdown::render("data.Rmd", output_dir = "www", output_file = "data.html")
+  #     active_tab(input$main_nav)
+  #   }
+  # })
+  # 
+  # output$data_html <- renderUI({
+  #   if (active_tab() == "data") {
+  #     tags$iframe(src = "data.html", style = "width:100%; height:400px;")
+  #   }
+  # })
   
   ############################################################################################################################
   
@@ -144,15 +145,22 @@ server <- function(input, output, session) {
   
   
   # Read the data from the Excel file
-  data  <- read_excel(excel_file_path) %>% 
+  data  <- readRDS(excel_file_path) %>% 
     janitor::clean_names() %>% 
     dplyr::mutate(week_ending = as.Date(week_ending))
   
   output$overview_table <- renderDataTable({
-    datatable(
-      data,
-      options = list(pageLength = 10)
-    )
+    DT::datatable(data,
+                  extensions = c('Buttons', 'FixedHeader'), 
+                  options = list(
+                    pageLength = 100,
+                    scrollX = TRUE,
+                    scrollY = "500px", 
+                    dom = 'Blfrtip',
+                    buttons = c('copy', 'csv', 'excel'),
+                    fixedHeader = TRUE, 
+                    fixedColumns = list(leftColumns = 2)),
+                  rownames = FALSE)
   })
 }
 

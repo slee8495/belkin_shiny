@@ -41,6 +41,22 @@ body {
 
 2. How would you think of automation of this raw data in a tool of your choice before feeding it to a visualization tool
 
+<br><br>
+
+## Data for the case study
+
+#### Data Dictionary:
+
+- Week ending: Ending date of a 7 day week
+- asin : Product Identification Number
+- orderedRevenueAmount: Revenue from that of the product
+- orderedUnits: Units sold of the product
+- ASP: Selling Price
+- Category: Identified category
+- subcategory: Identified sub category
+- Marketing spend: $ spent on marketing
+- Views: # views on the product
+
 ------------------------------------------------------------------------
 
 ------------------------------------------------------------------------
