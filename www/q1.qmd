@@ -7,14 +7,11 @@ editor_options:
 ---
 
 
-#### Question 1: What key metrics would you propose to monitor over time to define the success of the team’s efforts in improving the revenue and why? Clearly define your metric(s) and explain how each is computed.
+## Question 1: What key metrics would you propose to monitor over time to define the success of the team’s efforts in improving the revenue and why? Clearly define your metric(s) and explain how each is computed.
 
 <br>
 
-
-I will go ahead and load the neccessary packages to perform the analysis
-
-
+I will load the required packages to perform the analysis
 
 ```{r, message=FALSE, warning=FALSE}
 library(tidyverse)
@@ -26,7 +23,7 @@ library(caret)
 ```
 
 
-In order to do that, let's examine the data first. 
+To proceed, let's first examine the data.
 
 :::: {.callout-note collapse="false"}
 ### Variable Definitions
@@ -58,12 +55,11 @@ belkin_data %>%
 
 <br>
 
-Looking at the dataset, I have to define which variable should be the response variable, and determine the best independent variables. 
+Examining the dataset, I need to identify the response variable and determine the most suitable independent variables.
 
+Before diving into the statistical modeling, I want to ensure the data is usable for analysis.
 
-before I deep dive into the statistical modeling, I'd like to see if the data is usable for the analysis. 
-
-Let's see how the data is structured and if there are any missing values.
+Let's review the data structure and check for any missing values
 
 ```{r}
 belkin_data %>% skim()
@@ -111,8 +107,10 @@ Key Takeaways:
 
 <br>
 
-##### Now, given that there is no missing data, and the data is well cleaned and good to use. I will go ahead compute the metrics that I would propose to monitor over time to define the success of the team’s efforts in improving the revenue.
+##### Now that there is no missing data, and the data is well-cleaned and ready for use, I will compute the metrics I propose to monitor over time to evaluate the success of the team’s efforts in improving revenue.
 
+
+I will compute the linear regression model, as our response variable is a numeric revenue indicator.
 
 
 ```{r}
@@ -186,7 +184,7 @@ Residual Standard Error: 4067 (moderate fit)
 
 <br>
 
-I will now try to refine the model by removing the non-significant predictors and re-evaluating the model fit.
+I will now refine the model by removing the non-significant predictors and re-evaluating the model fit.
 
 ```{r}
 refined_model <- lm(ordered_revenue_amount ~ asin + ordered_units + asp, data = data_train)
@@ -195,7 +193,7 @@ summary(refined_model)
 
 ```
 
-### Insights from the Refined Model (Now, the overall model becomes significantly improved in terms of the p-value)
+### Insights from the Refined Model (Now, the overall model shows significant improvement in terms of the p-value.)
 
 Key Points from the Model Summary
 

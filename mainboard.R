@@ -45,9 +45,9 @@ ui <- fluidPage(
                         fluidPage(
                           uiOutput("q1_content")
                         )),
-               tabPanel("2. Investment Recommendations", value = "chapter2",
+               tabPanel("2. Investment Recommendations", value = "q2",
                         fluidPage(
-                          uiOutput("chapter2_content")
+                          uiOutput("q2_content")
                         )),
                tabPanel("3. Statistical Modeling", value = "chapter3",
                         fluidPage(
@@ -129,6 +129,15 @@ server <- function(input, output, session) {
     }
   })
   
+  
+  ############################################################################################################################
+  
+  output$q2_content <- renderUI({
+    file_name_2 <- "q2.html" 
+    if (!is.null(file_name_2)) {
+      tags$iframe(src = file_name_2, style = "width:100%; height:800px;")
+    }
+  })
   
   ############################################################################################################################
   
