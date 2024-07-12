@@ -41,9 +41,9 @@ ui <- fluidPage(
                         ))
     ),
     navbarMenu("Key Questions to answer",
-               tabPanel("1. Key Metrics to Improve the Revenue", value = "chapter1",
+               tabPanel("1. Key Metrics to Improve the Revenue", value = "q1",
                         fluidPage(
-                          uiOutput("chapter1_content")
+                          uiOutput("q1_content")
                         )),
                tabPanel("2. Investment Recommendations", value = "chapter2",
                         fluidPage(
@@ -88,6 +88,9 @@ server <- function(input, output, session) {
     }
   })
   
+  
+  ############################################################################################################################
+  
   observeEvent(input$main_nav, {
     if(input$main_nav == "overview") {
       rendered_html <- rmarkdown::render("overview.Rmd", output_dir = "www", output_file = "overview.html")
@@ -101,6 +104,9 @@ server <- function(input, output, session) {
     }
   })
   
+  
+  ############################################################################################################################
+  
   observeEvent(input$main_nav, {
     if(input$main_nav == "data") {
       rendered_html <- rmarkdown::render("data.Rmd", output_dir = "www", output_file = "data.html")
@@ -113,6 +119,20 @@ server <- function(input, output, session) {
       tags$iframe(src = "data.html", style = "width:100%; height:400px;")
     }
   })
+  
+  ############################################################################################################################
+  
+  output$q1_content <- renderUI({
+    file_name <- "q1.html" 
+    if (!is.null(file_name)) {
+      tags$iframe(src = file_name, style = "width:100%; height:800px;")
+    }
+  })
+  
+  
+  ############################################################################################################################
+  
+  
   
   # Read the data from the Excel file
   data  <- read_excel(excel_file_path) %>% 
