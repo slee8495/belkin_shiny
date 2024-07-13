@@ -28,8 +28,7 @@ Please click the link below to view the Tableau dashboard I created for this cas
 
 <br>
 
-### [*Click*](https://10ay.online.tableau.com/#/site/businessanalyticsslee45926fe892/workbooks/1777114?:origin=card_share_link)
-
+### [*Click*](https://10ay.online.tableau.com/#/site/businessanalyticsslee45926fe892/workbooks/1777114?:origin=card_share_link){target="_blank"}
 
 ------------------------------------------------------------------------
 
