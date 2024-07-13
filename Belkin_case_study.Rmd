@@ -1,0 +1,491 @@
+---
+author: "Sangho Lee"
+date: "7/12/2024"
+callout-appearance: minimal
+editor_options:
+  chunk_output_type: console
+output:
+  word_document: default
+  pdf_document: default
+  html_document:
+    df_print: paged
+---
+
+# Belkin - Case Study: eCommerce Data Analyst Hiring Process [Sangho Lee]
+
+add link here. 
+
+<br>
+
+I explored eCommerce analytics with a case study on Belkin’s performance on the Amazon Marketplace. Using the provided data, I analyzed Belkin’s metrics to offer actionable insights, focusing on key indicators for revenue growth, investment opportunities, and recommendations for improvement. Additionally, I demonstrated these insights through an interactive dashboard and discussed strategies for automating data processing on this website.
+
+<br>
+
+### Summary of the Regression model
+
+Based on our findings from questions 1 and 2, we have examined the quality of the data, created a regression model, and identified the key drivers of revenue by analyzing the p-values and coefficients to determine the most significant predictors.
+
+
+
+```{r, message=FALSE, warning=FALSE, include=FALSE}
+library(tidyverse)
+library(DT)
+library(readxl)
+library(skimr)
+library(caret)
+library(knitr)
+library(patchwork)
+
+```
+
+
+
+```{r, warning=FALSE, message=FALSE, include=FALSE}
+belkin_data <- readRDS("belkin_data.rds")
+belkin_data %>% 
+  janitor::clean_names() %>% 
+  dplyr::mutate(week_ending = as.Date(week_ending)) -> belkin_data
+
+
+```
+
+
+<br>
+
+
+```{r, include = FALSE}
+model_data <- belkin_data %>%
+  mutate(ordered_revenue_amount = as.numeric(ordered_revenue_amount),
+         ordered_units = as.numeric(ordered_units),
+         asp = as.numeric(asp),
+         marketing_spend = as.numeric(marketing_spend),
+         views = as.numeric(views),
+         category = as.factor(category),
+         subcategory = as.factor(subcategory),
+         ordered_revenue_amount = as.numeric(ordered_revenue_amount),
+         ordered_units = as.numeric(ordered_units),
+         asp = as.numeric(asp),
+         marketing_spend = as.numeric(marketing_spend),
+         views = as.numeric(views))
+
+```
+
+```{r, include=FALSE}
+model_data <- model_data %>%
+  replace_na(list(ordered_revenue_amount = 0,
+                  ordered_units = 0,
+                  asp = 0,
+                  marketing_spend = 0,
+                  views = 0)) %>%
+  mutate(across(everything(), ~ replace(.x, is.infinite(.x) | is.nan(.x), 0)))
+
+```
+
+```{r, include=FALSE}
+
+# Create dummy variables for categorical predictors
+data_dummies <- dummyVars(" ~ .", data = model_data)
+data_prepared <- predict(data_dummies, newdata = model_data) %>% as.data.frame()
+
+```
+
+```{r, include=FALSE}
+# Split the data into training and testing sets
+set.seed(123)
+trainIndex <- createDataPartition(data_prepared$ordered_revenue_amount, p = 0.8, list = FALSE, times = 1)
+data_train <- data_prepared[trainIndex,]
+data_test <- data_prepared[-trainIndex,]
+
+
+```
+
+```{r, include=FALSE}
+model <- lm(ordered_revenue_amount ~ ., data = data_train)
+
+options(scipen = 999)
+```
+
+
+```{r, message=FALSE, warning=FALSE}
+# Show the regression model
+summary(model)
+
+
+```
+
+
+<br> 
+
+From this model, we found that the most significant predictors of revenue are:
+
+- Number of units ordered (ordered_units): Coefficient = 20.67. This indicates that for each additional unit ordered, revenue increases by $20.67 (p-value < 0.00002).
+
+- Average selling price (asp): Coefficient = 31.37. This means that for each $1 increase in the average selling price, revenue increases by $31.37 (p-value < 0.00002).
+
+- Product identification number (asin): With a p-value of 0.00002, this predictor is also significant.
+
+Although there are other predictors with high absolute coefficients, they are not as significant in terms of the p-value, indicating that they are not as reliable in this model.
+
+
+<br>
+
+
+Based on this rationale, I have made the following recommendations for actions to improve revenue:
+
+1. Focus on Increasing Units Sold
+- Rationale: The number of units sold (ordered_units) is the most significant predictor of revenue, with a coefficient of 20.671226 and a very low p-value (< 0.0000000000000002). This strong positive relationship indicates that increasing the number of units sold will significantly boost revenue.
+
+- Action: Implement strategies to increase units sold, such as promotional campaigns, discounts for bulk purchases, and improved product availability. Enhance distribution channels to ensure products are always in stock and accessible to customers.
+
+2. Optimize Average Selling Price (ASP)
+- Rationale: The average selling price (asp) also has a significant positive impact on revenue, with a coefficient of 31.411177 and a very low p-value (< 0.0000000000000002). Higher ASP contributes to higher revenue.
+
+- Action: Evaluate the pricing strategy to find an optimal balance that maximizes revenue without reducing demand. Consider value-based pricing, premium pricing for high-demand products, and periodic price adjustments based on market trends and competitor pricing.
+
+3. Leverage Product Identification (ASIN)
+- Rationale: The asin variable, which represents product identification, has a significant positive coefficient of 0.011480 with a very low p-value (< 0.0000000000000002). This suggests that certain products inherently drive higher revenue.
+
+- Action: Identify and prioritize products with high revenue potential based on their ASINs. Focus marketing and promotional efforts on these high-performing products. Additionally, analyze characteristics of these high-revenue ASINs to replicate their success across other products.
+
+
+
+<br>
+<br>
+
+
+
+
+
+
+
+```{r, include=FALSE}
+refined_model <- lm(ordered_revenue_amount ~ asin + ordered_units + asp, data = data_train)
+summary(refined_model)
+
+
+```
+
+
+<br>
+
+
+Now that we have identified the key drivers according to the model, we have redesigned it using only the significant variables to enhance its strength.
+
+```{r}
+# Show the refiend model that I created in the previous question
+summary(refined_model)
+
+```
+
+<br>
+
+
+We then added the predicted_revenue column to the dataset. With this, we can now categorize the areas that overperformed and underperformed according to the model's predictions.
+
+
+<br>
+
+```{r, include=FALSE}
+# Add predictions to the dataset
+data_test$predicted_revenue <- predict(refined_model, newdata = data_test)
+
+# Combine training and testing data for a comprehensive dataset
+data_combined <- bind_rows(data_train, data_test)
+data_combined$predicted_revenue <- predict(refined_model, newdata = data_combined)
+
+data_combined %>% 
+  head(10) %>% 
+  dplyr::select(week_ending, asin, ordered_revenue_amount, ordered_units, asp, marketing_spend, views, predicted_revenue) %>% 
+  knitr::kable() -> predicted_revenue_table
+  
+  
+```
+
+```{r}
+predicted_revenue_table
+
+```
+
+<br> 
+
+
+
+Then we moved on to the second question to dive deeper into which specific products to focus on. Before visualizing the data, I explained why we should focus on predicted revenue from the model instead of relying solely on actual sales data.
+
+##### Benefits of Utilizing Model Prediction Data Instead of Relying on Actual Sales Data
+
+- Identify potential issues like stock shortages.
+- Optimize marketing strategies.
+- Adjust pricing to match market demand.
+- Improve product listings to enhance conversions.
+- Prepare for seasonal demand.
+- Estimate potential success for new product launches.
+
+
+
+This approach is crucial for identifying potential issues like stock shortages, optimizing marketing strategies, adjusting pricing to match market demand, improving product listings to enhance conversions, preparing for seasonal demand, and estimating potential success for new product launches.
+
+<br>
+
+
+```{r, include = FALSE}
+# Visualization: Actual vs. Predicted Revenue
+ggplot(data_combined, aes(x = ordered_revenue_amount, y = predicted_revenue)) +
+  geom_point(alpha = 0.5) +
+  geom_abline(slope = 1, intercept = 0, color = "red", linetype = "dashed") +
+  labs(title = "Actual vs. Predicted Revenue",
+       x = "Actual Revenue",
+       y = "Predicted Revenue") +
+  theme_minimal() -> plot_actual_vs_predicted_revenue
+
+```
+
+```{r}
+# Show the plot of Actual vs. Predicted Revenue
+plot_actual_vs_predicted_revenue
+
+```
+
+
+
+Looking at this plot, we were able to identify areas where actual revenue was higher or lower than predicted revenue. This information helps us focus on specific products that may require further analysis or action to improve sales performance.
+
+To pinpoint the specific products that overperformed or underperformed, we set a threshold for the outliers in the plot. The identified products are shown in the visualization below.
+
+<br>
+
+
+
+```{r, fig.width=10, fig.height=9, fig.align='center', message=FALSE, warning=FALSE, include = FALSE}
+ggplot(data_combined, aes(x = ordered_revenue_amount, y = predicted_revenue, size = ordered_revenue_amount, color = abs(ordered_revenue_amount - predicted_revenue))) +
+  geom_point(alpha = 0.5) +
+  geom_abline(slope = 1, intercept = 0, color = "red", linetype = "dashed") +
+  labs(title = "Actual vs. Predicted Revenue with Critical Score by Actual Revenue",
+       x = "Actual Revenue",
+       y = "Predicted Revenue",
+       size = "Actual Revenue",
+       color = "Critical Score (|Actual - Predicted|)") +
+  scale_color_gradient(low = "blue", high = "red") +
+  scale_size_continuous(range = c(1, 10)) +  # Adjust the range to make points larger
+  theme_minimal() +
+  theme(legend.position = "bottom",
+        plot.title = element_text(hjust = 0.5, size = 14, face = "bold"),
+        axis.title.x = element_text(size = 12),
+        axis.title.y = element_text(size = 12),
+        legend.title = element_text(size = 10),
+        legend.text = element_text(size = 8)) +
+
+  annotate("rect", xmin = 0, xmax = 20000, ymin = 50000, ymax = 120000, color = "black", fill = NA, size = 1, linetype = "dashed") +
+  annotate("rect", xmin = 80000, xmax = 150000, ymin = 0, ymax = 50000, color = "black", fill = NA, size = 1, linetype = "dashed") +
+
+  geom_text(data = data_combined %>% filter(ordered_revenue_amount < 20000 & predicted_revenue > 50000),
+            aes(label = asin), size = 3, vjust = -1, color = "black") +
+  geom_text(data = data_combined %>% filter(ordered_revenue_amount > 80000 & ordered_revenue_amount < 150000 & predicted_revenue < 50000),
+            aes(label = asin), size = 3, vjust = -1, color = "black") -> plot_actual_vs_predicted_revenue_critical
+```
+
+<br>
+
+```{r, fig.width=10, fig.height=9, fig.align='center', message=FALSE, warning=FALSE}
+# Show the plot of Actual vs. Predicted Revenue with Critical Score by Actual Revenue
+plot_actual_vs_predicted_revenue_critical
+
+```
+
+
+Next, we categorized the products into two focus areas based on the plot criteria:
+
+- Focus Area 1: Products with high predicted revenue but low actual revenue. These products likely have potential, but something may be missing to maximize their profit.
+- Focus Area 2: Products with low predicted revenue but high actual revenue. We need to investigate why these products are performing better than predicted. Understanding the reasons behind their success can help replicate it for other products or minimize risks in the future.
+
+<br>
+
+
+```{r, include = FALSE}
+
+# Filter the dataset based on the plot criteria
+filtered_data_high_predicted_low_actual <- data_combined %>%
+  filter(ordered_revenue_amount < 20000 & predicted_revenue > 50000)
+
+filtered_data_low_predicted_high_actual <- data_combined %>%
+  filter(ordered_revenue_amount > 80000 & ordered_revenue_amount < 150000 & predicted_revenue < 50000)
+
+# Combine the filtered data with segmentation
+focus_area_1 <- filtered_data_high_predicted_low_actual %>%
+  mutate(focus_area = "Focus Area 1 (High Prediction, Low Revenue)",
+         check_items = "Investigate Stock Levels, Enhance Marketing Strategies, Improve Product Listings")
+
+focus_area_2 <- filtered_data_low_predicted_high_actual %>%
+  mutate(focus_area = "Focus Area 2 (Low Prediction, High Revenue)",
+         check_items = "Examine Sales Trends, Optimize Stock Management, Replicate Success")
+
+# Combine the focus areas
+segmented_data <- bind_rows(focus_area_1, focus_area_2)
+
+# Display the segmented data
+segmented_data %>%
+  mutate(week_ending = as.Date(week_ending)) %>%
+  group_by(asin) %>%
+  summarize(focus_area = first(focus_area), check_items = first(check_items)) %>% 
+  knitr::kable() -> segmented_data_table
+
+
+```
+
+```{r}
+segmented_data_table
+```
+
+### Conclusion
+
+
+
+Based on the analysis of this dataset, we identified the key drivers by examining statistical indicators from the model, pinpointed products that are overperforming or underperforming, and segmented the products into two focus areas for further investigation. Using this approach, I recommend investing further in the following five products to maximize revenue by either boosting sales or preventing revenue decline.
+
+
+<br>
+<br>
+
+```{r, include = FALSE}
+# Ensure numeric columns are properly formatted
+belkin_data <- belkin_data %>%
+  mutate(
+    asp = as.numeric(asp),
+    ordered_revenue_amount = as.numeric(ordered_revenue_amount),
+    marketing_spend = as.numeric(marketing_spend),
+    views = as.numeric(views)
+  )
+```
+
+
+In this analysis, I will perform additional descriptive analysis to extract insights from the given data.
+
+### 1. Revenue vs. Marketing Spend vs. Views
+
+```{r, fig.width=10, fig.height=9, warning=FALSE, message=FALSE}
+# Create scatter plot of Revenue vs Marketing Spend
+p1 <- ggplot(belkin_data, aes(x = marketing_spend, y = ordered_revenue_amount, color = asp, size = views)) +
+  geom_point(alpha = 0.6) +
+  scale_color_gradient(low = "blue", high = "red") +
+  labs(title = "Revenue vs. Marketing Spend with ASP", x = "Marketing Spend ($)", y = "Revenue ($)", color = "ASP ($)") +
+  theme_minimal()
+
+# Create scatter plot of Revenue vs. Views, color-coded by Marketing Spend and size by ASP
+p2 <- ggplot(belkin_data, aes(x = views, y = ordered_revenue_amount, color = marketing_spend, size = asp)) +
+  geom_point(alpha = 0.7) +
+  scale_color_gradient(low = "blue", high = "red") +
+  labs(title = "Revenue vs. Views with Marketing Spend and ASP",
+       x = "Views",
+       y = "Revenue ($)",
+       color = "Marketing Spend ($)",
+       size = "ASP ($)") +
+  theme_minimal() +
+  theme(legend.position = "right",
+        plot.title = element_text(hjust = 0.5, size = 14, face = "bold"),
+        axis.title.x = element_text(size = 12),
+        axis.title.y = element_text(size = 12),
+        legend.title = element_text(size = 10),
+        legend.text = element_text(size = 8))
+
+# Combine the two plots into one screen
+combined_plot <- p1 + p2 + plot_layout(ncol = 1, heights = c(1, 1))
+
+# Display the combined plot
+combined_plot
+```
+
+
+
+#### Revenue vs. Marketing Spend:
+
+- Spread Across Spend: The marketing spend is distributed across the entire range from $0 to $5000, indicating a diverse allocation of marketing budgets across different products.
+- Revenue Distribution: Revenue is mostly clustered at lower values, even with varying marketing spend levels. This suggests that high marketing spend does not always translate to higher revenue.
+- ASP Impact: ASP ranges from $80 to $180, with clusters (in purplish color) around higher revenue values.
+
+#### Revenue vs. Views:
+
+- Views Distribution: The views range from 0 to 2000, showing that product visibility varies widely.
+- Revenue Clustering: Similar to marketing spend, revenue is clustered at lower values regardless of the number of views
+- Marketing Spend Clustering: Products with higher marketing spend are clustered around lower revenue values, indicating that increased marketing spend does not always lead to higher revenue.
+
+#### Key Takeaways:
+
+- Optimize Marketing Spend: Since revenue does not consistently increase with higher marketing spend, it's important to evaluate the effectiveness of marketing campaigns and reallocate budget towards more impactful strategies.
+- More Views Generally Lead to More Revenue: Products with higher views tend to generate more revenue, suggesting that increasing product visibility can positively impact sales.
+
+<br>
+
+
+
+
+
+### 2. Revenue Over Time vs. Views Over Time
+
+
+```{r, fig.width=10, fig.height=9, message = FALSE, warning = FALSE}
+# Line plot of Revenue over Time
+t1 <- belkin_data %>%
+  mutate(week_ending = as.Date(week_ending)) %>%
+  group_by(week_ending) %>%
+  summarise(total_revenue = sum(ordered_revenue_amount)) %>%
+  ggplot(aes(x = week_ending, y = total_revenue)) +
+  geom_line(color = "blue") +
+  labs(title = "Revenue Over Time", x = "Week Ending", y = "Total Revenue ($)") +
+  theme_minimal()+
+    theme(plot.title = element_text(hjust = 0.5, size = 14, face = "bold"),
+        axis.title.x = element_text(size = 12),
+        axis.title.y = element_text(size = 12))
+
+# Line plot of Views Over Time
+t2 <- belkin_data %>%
+  mutate(week_ending = as.Date(week_ending)) %>%
+  group_by(week_ending) %>%
+  summarise(total_views = sum(views)) %>%
+  ggplot(aes(x = week_ending, y = total_views)) +
+  geom_line(color = "red") +
+  labs(title = "Views Over Time",
+       x = "Week Ending",
+       y = "Total Views") +
+  theme_minimal() +
+  theme(plot.title = element_text(hjust = 0.5, size = 14, face = "bold"),
+        axis.title.x = element_text(size = 12),
+        axis.title.y = element_text(size = 12))
+
+combined_plot_2 <- t1 / t2
+combined_plot_2
+```
+
+
+
+
+
+#### January:
+- Observation: High revenue despite stable views.
+- Action: Analyze and replicate successful marketing strategies or promotions used in January to drive high revenue. Identify unique factors (e.g., post-holiday shopping) contributing to this performance.
+
+#### February:
+- Observation: Significant decline in revenue while views remain stable.
+- Action: Investigate potential issues such as reduced marketing effectiveness, pricing changes, or external factors affecting consumer purchasing power. Adjust marketing efforts and pricing strategies to counteract the revenue decline.
+
+#### April:
+- Observation: Increased views but fluctuating revenue.
+- Action: Optimize product listings, improve product descriptions, and ensure competitive pricing to convert higher views into actual sales. Evaluate the effectiveness of promotional campaigns to ensure they are converting views into purchases.
+
+#### May:
+- Observation: Continued increase in views but fluctuating revenue.
+- Action: Enhance conversion rates by optimizing product listings, running targeted promotions, and providing incentives such as discounts or free shipping to encourage purchases.
+
+#### June:
+- Observation: Gradual increase in revenue despite a slight decline in views.
+- Action: Maintain and further improve conversion rates by analyzing successful strategies implemented in June. Focus on sustaining this growth through continued marketing efforts, product improvements, and strategies to increase views.
+
+#### Recommendations:
+- Analyze January Strategies: Understand and replicate successful marketing strategies from January to boost revenue in other months.
+- Address February Decline: Investigate and address factors contributing to the revenue decline in February. Adjust marketing and pricing strategies accordingly.
+- Convert Views to Sales in April and May: Optimize product listings, run effective promotions, and provide incentives to convert higher views into sales during these months.
+- Sustain Growth in June: Maintain and enhance successful strategies from June to ensure continued revenue growth.
+
+
+<br><br>
+
+

@@ -5,7 +5,7 @@ account: stan-lee
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 12309468
-bundleId: 8857634
+bundleId: 8858625
 url: https://sangho-lee.shinyapps.io/belkin_case_study/
 version: 1
 asMultiple: FALSE

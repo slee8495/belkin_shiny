@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.450">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Sangho Lee">
+<meta name="dcterms.date" content="2024-07-12">
+
+<title>q3</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="q3_files/libs/clipboard/clipboard.min.js"></script>
+<script src="q3_files/libs/quarto-html/quarto.js"></script>
+<script src="q3_files/libs/quarto-html/popper.min.js"></script>
+<script src="q3_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="q3_files/libs/quarto-html/anchor.min.js"></script>
+<link href="q3_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="q3_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="q3_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="q3_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="q3_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body class="fullcontent">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+
+
+<section id="question-3-how-would-you-visually-story-tell-the-recommendations-via-a-dashboard-could-you-produce-visual-evidence-or-statistical-evidence-of-your-conclusionsrecommendations" class="level2">
+<h2 class="anchored" data-anchor-id="question-3-how-would-you-visually-story-tell-the-recommendations-via-a-dashboard-could-you-produce-visual-evidence-or-statistical-evidence-of-your-conclusionsrecommendations">Question 3: How would you visually story tell the recommendations via a dashboard could you produce visual evidence or statistical evidence of your conclusions/recommendations?</h2>
+<p><em><span style="color:blue;">Goal of the analysis: Narratively explain the entire analysis, illustrating how I concluded which areas and products to focus on, using visual and statistical evidence.</span></em></p>
+<p><br></p>
+<section id="summary-of-the-regression-model" class="level3">
+<h3 class="anchored" data-anchor-id="summary-of-the-regression-model">Summary of the Regression model</h3>
+<p>Based on our findings from questions 1 and 2, we have examined the quality of the data, created a regression model, and identified the key drivers of revenue by analyzing the p-values and coefficients to determine the most significant predictors.</p>
+<p><br></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Show the regression model</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = ordered_revenue_amount ~ ., data = data_train)
+
+Residuals:
+   Min     1Q Median     3Q    Max 
+-77579   -612   -189    396 118367 
+
+Coefficients: (2 not defined because of singularities)
+                    Estimate   Std. Error t value            Pr(&gt;|t|)    
+(Intercept)      5867.940130 14735.909116   0.398              0.6905    
+week_ending        -0.364153     0.743986  -0.489              0.6245    
+asin                0.011511     0.001368   8.416 &lt;0.0000000000000002 ***
+ordered_units      20.675258     0.205555 100.583 &lt;0.0000000000000002 ***
+asp                31.373871     0.967078  32.442 &lt;0.0000000000000002 ***
+category.a         30.402476   106.148560   0.286              0.7746    
+category.b         -3.528137   106.208459  -0.033              0.9735    
+category.c        180.248411   106.282564   1.696              0.0899 .  
+category.d                NA           NA      NA                  NA    
+subcategory.aa   -106.172324   118.636310  -0.895              0.3708    
+subcategory.bb    164.342191   118.622853   1.385              0.1660    
+subcategory.cc      5.252084   118.383693   0.044              0.9646    
+subcategory.dd    -21.019948   118.537029  -0.177              0.8593    
+subcategory.ee            NA           NA      NA                  NA    
+marketing_spend    -0.034668     0.032283  -1.074              0.2829    
+views               0.079425     0.067711   1.173              0.2408    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 4067 on 11762 degrees of freedom
+Multiple R-squared:  0.485, Adjusted R-squared:  0.4845 
+F-statistic: 852.2 on 13 and 11762 DF,  p-value: &lt; 0.00000000000000022</code></pre>
+</div>
+</div>
+<p><br></p>
+<p>From this model, we found that the most significant predictors of revenue are:</p>
+<ul>
+<li><p>Number of units ordered (ordered_units): Coefficient = 20.67. This indicates that for each additional unit ordered, revenue increases by $20.67 (p-value &lt; 0.00002).</p></li>
+<li><p>Average selling price (asp): Coefficient = 31.37. This means that for each $1 increase in the average selling price, revenue increases by $31.37 (p-value &lt; 0.00002).</p></li>
+<li><p>Product identification number (asin): With a p-value of 0.00002, this predictor is also significant.</p></li>
+</ul>
+<p>Although there are other predictors with high absolute coefficients, they are not as significant in terms of the p-value, indicating that they are not as reliable in this model.</p>
+<p><br></p>
+<p>Based on this rationale, I have made the following recommendations for actions to improve revenue:</p>
+<ol type="1">
+<li>Focus on Increasing Units Sold</li>
+</ol>
+<ul>
+<li><p>Rationale: The number of units sold (ordered_units) is the most significant predictor of revenue, with a coefficient of 20.671226 and a very low p-value (&lt; 0.0000000000000002). This strong positive relationship indicates that increasing the number of units sold will significantly boost revenue.</p></li>
+<li><p>Action: Implement strategies to increase units sold, such as promotional campaigns, discounts for bulk purchases, and improved product availability. Enhance distribution channels to ensure products are always in stock and accessible to customers.</p></li>
+</ul>
+<ol start="2" type="1">
+<li>Optimize Average Selling Price (ASP)</li>
+</ol>
+<ul>
+<li><p>Rationale: The average selling price (asp) also has a significant positive impact on revenue, with a coefficient of 31.411177 and a very low p-value (&lt; 0.0000000000000002). Higher ASP contributes to higher revenue.</p></li>
+<li><p>Action: Evaluate the pricing strategy to find an optimal balance that maximizes revenue without reducing demand. Consider value-based pricing, premium pricing for high-demand products, and periodic price adjustments based on market trends and competitor pricing.</p></li>
+</ul>
+<ol start="3" type="1">
+<li>Leverage Product Identification (ASIN)</li>
+</ol>
+<ul>
+<li><p>Rationale: The asin variable, which represents product identification, has a significant positive coefficient of 0.011480 with a very low p-value (&lt; 0.0000000000000002). This suggests that certain products inherently drive higher revenue.</p></li>
+<li><p>Action: Identify and prioritize products with high revenue potential based on their ASINs. Focus marketing and promotional efforts on these high-performing products. Additionally, analyze characteristics of these high-revenue ASINs to replicate their success across other products.</p></li>
+</ul>
+<p><br> <br></p>
+<p><br></p>
+<p>Now that we have identified the key drivers according to the model, we have redesigned it using only the significant variables to enhance its strength.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Show the refiend model that I created in the previous question</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(refined_model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = ordered_revenue_amount ~ asin + ordered_units + 
+    asp, data = data_train)
+
+Residuals:
+   Min     1Q Median     3Q    Max 
+-77609   -597   -203    387 118636 
+
+Coefficients:
+                  Estimate   Std. Error t value            Pr(&gt;|t|)    
+(Intercept)   -1306.511753    94.473524 -13.829 &lt;0.0000000000000002 ***
+asin              0.011480     0.001364   8.414 &lt;0.0000000000000002 ***
+ordered_units    20.671226     0.205513 100.584 &lt;0.0000000000000002 ***
+asp              31.411177     0.966556  32.498 &lt;0.0000000000000002 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 4068 on 11772 degrees of freedom
+Multiple R-squared:  0.4845,    Adjusted R-squared:  0.4844 
+F-statistic:  3688 on 3 and 11772 DF,  p-value: &lt; 0.00000000000000022</code></pre>
+</div>
+</div>
+<p><br></p>
+<p>We then added the predicted_revenue column to the dataset. With this, we can now categorize the areas that overperformed and underperformed according to the model’s predictions.</p>
+<p><br></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>predicted_revenue_table</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="table table-sm table-striped small">
+<colgroup>
+<col style="width: 11%">
+<col style="width: 5%">
+<col style="width: 22%">
+<col style="width: 13%">
+<col style="width: 8%">
+<col style="width: 15%">
+<col style="width: 5%">
+<col style="width: 17%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: right;">week_ending</th>
+<th style="text-align: right;">asin</th>
+<th style="text-align: right;">ordered_revenue_amount</th>
+<th style="text-align: right;">ordered_units</th>
+<th style="text-align: right;">asp</th>
+<th style="text-align: right;">marketing_spend</th>
+<th style="text-align: right;">views</th>
+<th style="text-align: right;">predicted_revenue</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">19728</td>
+<td style="text-align: right;">99345</td>
+<td style="text-align: right;">1902.66</td>
+<td style="text-align: right;">95</td>
+<td style="text-align: right;">20.02800</td>
+<td style="text-align: right;">3741</td>
+<td style="text-align: right;">111</td>
+<td style="text-align: right;">2426.7939</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">19728</td>
+<td style="text-align: right;">91686</td>
+<td style="text-align: right;">224.15</td>
+<td style="text-align: right;">12</td>
+<td style="text-align: right;">18.67917</td>
+<td style="text-align: right;">2309</td>
+<td style="text-align: right;">185</td>
+<td style="text-align: right;">580.7918</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">19728</td>
+<td style="text-align: right;">90798</td>
+<td style="text-align: right;">437.74</td>
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">48.63778</td>
+<td style="text-align: right;">4781</td>
+<td style="text-align: right;">253</td>
+<td style="text-align: right;">1449.6195</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">19728</td>
+<td style="text-align: right;">28305</td>
+<td style="text-align: right;">4.95</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">4.95000</td>
+<td style="text-align: right;">1643</td>
+<td style="text-align: right;">1069</td>
+<td style="text-align: right;">-805.4265</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">19728</td>
+<td style="text-align: right;">52947</td>
+<td style="text-align: right;">13.49</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">13.49000</td>
+<td style="text-align: right;">3206</td>
+<td style="text-align: right;">347</td>
+<td style="text-align: right;">-254.2959</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">19728</td>
+<td style="text-align: right;">40959</td>
+<td style="text-align: right;">13064.52</td>
+<td style="text-align: right;">597</td>
+<td style="text-align: right;">21.88362</td>
+<td style="text-align: right;">1292</td>
+<td style="text-align: right;">323</td>
+<td style="text-align: right;">12191.7913</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">19728</td>
+<td style="text-align: right;">57942</td>
+<td style="text-align: right;">612.19</td>
+<td style="text-align: right;">34</td>
+<td style="text-align: right;">18.00559</td>
+<td style="text-align: right;">3432</td>
+<td style="text-align: right;">1876</td>
+<td style="text-align: right;">627.0348</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">19728</td>
+<td style="text-align: right;">58053</td>
+<td style="text-align: right;">602.36</td>
+<td style="text-align: right;">44</td>
+<td style="text-align: right;">13.69000</td>
+<td style="text-align: right;">1284</td>
+<td style="text-align: right;">408</td>
+<td style="text-align: right;">699.4636</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">19728</td>
+<td style="text-align: right;">60495</td>
+<td style="text-align: right;">280.14</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">46.69000</td>
+<td style="text-align: right;">3930</td>
+<td style="text-align: right;">1156</td>
+<td style="text-align: right;">978.5589</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">19728</td>
+<td style="text-align: right;">59385</td>
+<td style="text-align: right;">1816.13</td>
+<td style="text-align: right;">69</td>
+<td style="text-align: right;">26.32072</td>
+<td style="text-align: right;">4519</td>
+<td style="text-align: right;">1673</td>
+<td style="text-align: right;">1628.2810</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><br></p>
+<p>Then we moved on to the second question to dive deeper into which specific products to focus on. Before visualizing the data, I explained why we should focus on predicted revenue from the model instead of relying solely on actual sales data.</p>
+<section id="benefits-of-utilizing-model-prediction-data-instead-of-relying-on-actual-sales-data" class="level5">
+<h5 class="anchored" data-anchor-id="benefits-of-utilizing-model-prediction-data-instead-of-relying-on-actual-sales-data">Benefits of Utilizing Model Prediction Data Instead of Relying on Actual Sales Data</h5>
+<ul>
+<li>Identify potential issues like stock shortages.</li>
+<li>Optimize marketing strategies.</li>
+<li>Adjust pricing to match market demand.</li>
+<li>Improve product listings to enhance conversions.</li>
+<li>Prepare for seasonal demand.</li>
+<li>Estimate potential success for new product launches.</li>
+</ul>
+<p>This approach is crucial for identifying potential issues like stock shortages, optimizing marketing strategies, adjusting pricing to match market demand, improving product listings to enhance conversions, preparing for seasonal demand, and estimating potential success for new product launches.</p>
+<p><br></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Show the plot of Actual vs. Predicted Revenue</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>plot_actual_vs_predicted_revenue</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="q3_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Looking at this plot, we were able to identify areas where actual revenue was higher or lower than predicted revenue. This information helps us focus on specific products that may require further analysis or action to improve sales performance.</p>
+<p>To pinpoint the specific products that overperformed or underperformed, we set a threshold for the outliers in the plot. The identified products are shown in the visualization below.</p>
+<p><br></p>
+<p><br></p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Show the plot of Actual vs. Predicted Revenue with Critical Score by Actual Revenue</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>plot_actual_vs_predicted_revenue_critical</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="q3_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Next, we categorized the products into two focus areas based on the plot criteria:</p>
+<ul>
+<li>Focus Area 1: Products with high predicted revenue but low actual revenue. These products likely have potential, but something may be missing to maximize their profit.</li>
+<li>Focus Area 2: Products with low predicted revenue but high actual revenue. We need to investigate why these products are performing better than predicted. Understanding the reasons behind their success can help replicate it for other products or minimize risks in the future.</li>
+</ul>
+<p><br></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>segmented_data_table</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="table table-sm table-striped small">
+<colgroup>
+<col style="width: 4%">
+<col style="width: 33%">
+<col style="width: 61%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: right;">asin</th>
+<th style="text-align: left;">focus_area</th>
+<th style="text-align: left;">check_items</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">2775</td>
+<td style="text-align: left;">Focus Area 1 (High Prediction, Low Revenue)</td>
+<td style="text-align: left;">Investigate Stock Levels, Enhance Marketing Strategies, Improve Product Listings</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">11655</td>
+<td style="text-align: left;">Focus Area 1 (High Prediction, Low Revenue)</td>
+<td style="text-align: left;">Investigate Stock Levels, Enhance Marketing Strategies, Improve Product Listings</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">67599</td>
+<td style="text-align: left;">Focus Area 2 (Low Prediction, High Revenue)</td>
+<td style="text-align: left;">Examine Sales Trends, Optimize Stock Management, Replicate Success</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">90243</td>
+<td style="text-align: left;">Focus Area 2 (Low Prediction, High Revenue)</td>
+<td style="text-align: left;">Examine Sales Trends, Optimize Stock Management, Replicate Success</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">90354</td>
+<td style="text-align: left;">Focus Area 2 (Low Prediction, High Revenue)</td>
+<td style="text-align: left;">Examine Sales Trends, Optimize Stock Management, Replicate Success</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+</section>
+<section id="conclusion" class="level3">
+<h3 class="anchored" data-anchor-id="conclusion">Conclusion</h3>
+<p>Based on the analysis of this dataset, we identified the key drivers by examining statistical indicators from the model, pinpointed products that are overperforming or underperforming, and segmented the products into two focus areas for further investigation. Using this approach, I recommend investing further in the following five products to maximize revenue by either boosting sales or preventing revenue decline.</p>
+</section>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

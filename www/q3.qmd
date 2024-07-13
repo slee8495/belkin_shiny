@@ -1,29 +1,23 @@
 ---
 author: "Sangho Lee"
-date: 7/11/2024
+date: 7/12/2024
 callout-appearance: minimal # this hides the blue "i" icon on .callout-notes
 editor_options: 
   chunk_output_type: console
 ---
 
 
-## Question 2: What areas/products should we invest to increase revenue. What Products are doing well and what could be improved? Propose 2-3 specific recommendations that could address these opportunities. Demonstrate rationale behind each recommendation
+## Question 3: How would you visually story tell the recommendations via a dashboard could you produce visual evidence or statistical evidence of your conclusions/recommendations?
 
+*<span style="color:blue;">Goal of the analysis: Narratively explain the entire analysis, illustrating how I concluded which areas and products to focus on, using visual and statistical evidence.</span>*
 
-*<span style="color:blue;">Goal of the analysis: Utilize the designed regression model on a test dataset, which is a 20% randomly selected portion of the data, and train the model using the training dataset, which is the remaining 80%. Implement the model on the actual data to predict the revenue for each line item, and compare the predicted revenue with actual sales to identify which products to focus on. Finally, provide recommendations on specific products to invest in for maximum revenue improvement.</span>*
 
 
 <br>
 
+### Summary of the Regression model
 
-Based on the statistical model from the previous question, we identified key variables to focus on to improve revenue: asin, ordered_units, and asp. Now, the task is to dive deeper into the data to determine which areas or products we should invest in to increase revenue.
-
-We can simply plot the top-performing products and categories based on revenue and units sold, which will be done here. However, there are several benefits to utilizing model prediction data instead of relying solely on actual sales data. We use prediction models instead of actual sales data because we don't know the complete backstory behind the sales data numbers.
-
-For example, a product may have performed poorly due to external factors such as a competitor's aggressive marketing campaign or a sudden change in consumer preferences. By using prediction models, we can identify products that are underperforming relative to their potential, allowing us to focus on areas that have room for improvement.
-
-In this analysis, we will compare the actual revenue data with the predicted revenue data from the model to identify products with the largest differences between predicted and actual revenue. This will help us pinpoint areas where we can invest to increase revenue.
-
+Based on our findings from questions 1 and 2, we have examined the quality of the data, created a regression model, and identified the key drivers of revenue by analyzing the p-values and coefficients to determine the most significant predictors.
 
 
 
@@ -99,14 +93,62 @@ data_test <- data_prepared[-trainIndex,]
 ```
 
 ```{r, include=FALSE}
-# Build the regression model
 model <- lm(ordered_revenue_amount ~ ., data = data_train)
 
 options(scipen = 999)
+```
+
+
+```{r, message=FALSE, warning=FALSE}
+# Show the regression model
 summary(model)
 
 
 ```
+
+
+<br> 
+
+From this model, we found that the most significant predictors of revenue are:
+
+- Number of units ordered (ordered_units): Coefficient = 20.67. This indicates that for each additional unit ordered, revenue increases by $20.67 (p-value < 0.00002).
+
+- Average selling price (asp): Coefficient = 31.37. This means that for each $1 increase in the average selling price, revenue increases by $31.37 (p-value < 0.00002).
+
+- Product identification number (asin): With a p-value of 0.00002, this predictor is also significant.
+
+Although there are other predictors with high absolute coefficients, they are not as significant in terms of the p-value, indicating that they are not as reliable in this model.
+
+
+<br>
+
+
+Based on this rationale, I have made the following recommendations for actions to improve revenue:
+
+1. Focus on Increasing Units Sold
+- Rationale: The number of units sold (ordered_units) is the most significant predictor of revenue, with a coefficient of 20.671226 and a very low p-value (< 0.0000000000000002). This strong positive relationship indicates that increasing the number of units sold will significantly boost revenue.
+
+- Action: Implement strategies to increase units sold, such as promotional campaigns, discounts for bulk purchases, and improved product availability. Enhance distribution channels to ensure products are always in stock and accessible to customers.
+
+2. Optimize Average Selling Price (ASP)
+- Rationale: The average selling price (asp) also has a significant positive impact on revenue, with a coefficient of 31.411177 and a very low p-value (< 0.0000000000000002). Higher ASP contributes to higher revenue.
+
+- Action: Evaluate the pricing strategy to find an optimal balance that maximizes revenue without reducing demand. Consider value-based pricing, premium pricing for high-demand products, and periodic price adjustments based on market trends and competitor pricing.
+
+3. Leverage Product Identification (ASIN)
+- Rationale: The asin variable, which represents product identification, has a significant positive coefficient of 0.011480 with a very low p-value (< 0.0000000000000002). This suggests that certain products inherently drive higher revenue.
+
+- Action: Identify and prioritize products with high revenue potential based on their ASINs. Focus marketing and promotional efforts on these high-performing products. Additionally, analyze characteristics of these high-revenue ASINs to replicate their success across other products.
+
+
+
+<br>
+<br>
+
+
+
+
+
 
 
 ```{r, include=FALSE}
@@ -117,17 +159,10 @@ summary(refined_model)
 ```
 
 
-#### Benefits of Utilizing Model Prediction Data Instead of Relying on Actual Sales Data
-
-- Identify potential issues like stock shortages.
-- Optimize marketing strategies.
-- Adjust pricing to match market demand.
-- Improve product listings to enhance conversions.
-- Prepare for seasonal demand.
-- Estimate potential success for new product launches.
-
 <br>
 
+
+Now that we have identified the key drivers according to the model, we have redesigned it using only the significant variables to enhance its strength.
 
 ```{r}
 # Show the refiend model that I created in the previous question
@@ -137,7 +172,13 @@ summary(refined_model)
 
 <br>
 
-```{r}
+
+We then added the predicted_revenue column to the dataset. With this, we can now categorize the areas that overperformed and underperformed according to the model's predictions.
+
+
+<br>
+
+```{r, include=FALSE}
 # Add predictions to the dataset
 data_test$predicted_revenue <- predict(refined_model, newdata = data_test)
 
@@ -148,21 +189,39 @@ data_combined$predicted_revenue <- predict(refined_model, newdata = data_combine
 data_combined %>% 
   head(10) %>% 
   dplyr::select(week_ending, asin, ordered_revenue_amount, ordered_units, asp, marketing_spend, views, predicted_revenue) %>% 
-  knitr::kable() 
+  knitr::kable() -> predicted_revenue_table
   
   
+```
+
+```{r}
+predicted_revenue_table
+
 ```
 
 <br> 
 
 
-Now that we have the predicted_revenue column from the regression model, we can categorize the areas that overperformed and underperformed according to the model's predictions.
 
+Then we moved on to the second question to dive deeper into which specific products to focus on. Before visualizing the data, I explained why we should focus on predicted revenue from the model instead of relying solely on actual sales data.
+
+##### Benefits of Utilizing Model Prediction Data Instead of Relying on Actual Sales Data
+
+- Identify potential issues like stock shortages.
+- Optimize marketing strategies.
+- Adjust pricing to match market demand.
+- Improve product listings to enhance conversions.
+- Prepare for seasonal demand.
+- Estimate potential success for new product launches.
+
+
+
+This approach is crucial for identifying potential issues like stock shortages, optimizing marketing strategies, adjusting pricing to match market demand, improving product listings to enhance conversions, preparing for seasonal demand, and estimating potential success for new product launches.
 
 <br>
 
 
-```{r}
+```{r, include = FALSE}
 # Visualization: Actual vs. Predicted Revenue
 ggplot(data_combined, aes(x = ordered_revenue_amount, y = predicted_revenue)) +
   geom_point(alpha = 0.5) +
@@ -170,61 +229,27 @@ ggplot(data_combined, aes(x = ordered_revenue_amount, y = predicted_revenue)) +
   labs(title = "Actual vs. Predicted Revenue",
        x = "Actual Revenue",
        y = "Predicted Revenue") +
-  theme_minimal()
+  theme_minimal() -> plot_actual_vs_predicted_revenue
 
 ```
 
+```{r}
+# Show the plot of Actual vs. Predicted Revenue
+plot_actual_vs_predicted_revenue
+
+```
+
+
+
+Looking at this plot, we were able to identify areas where actual revenue was higher or lower than predicted revenue. This information helps us focus on specific products that may require further analysis or action to improve sales performance.
+
+To pinpoint the specific products that overperformed or underperformed, we set a threshold for the outliers in the plot. The identified products are shown in the visualization below.
+
 <br>
 
-#### 1. Predicted Higher but Actual Sales Low
-
-Possible Reasons:
-
-- Stock Shortages: Products may have had insufficient stock to meet predicted demand.
-- Marketing Ineffectiveness: Marketing efforts may not have translated into actual sales.
-- Product Issues: Issues such as poor reviews, low quality, or unappealing product listings could be deterring sales.
-
-Actions:
-
-- Investigate Stock Levels: Ensure that these products are adequately stocked to meet potential demand.
-- Enhance Marketing Strategies: Re-evaluate marketing campaigns to ensure they are effectively targeting the right audience.
-- Improve Product Listings: Address any issues with product quality and enhance listings with better descriptions, images, and reviews.
-
-#### 2. Predicted Lower but Actual Sales High
-
-Possible Reasons:
-
-- Exceptional Demand: These products might have experienced an unexpected surge in demand.
-- Successful Marketing: Effective marketing campaigns could have driven higher-than-expected sales.
-- Seasonal/One-Time Events: The products could have benefited from seasonal trends or one-time events.
-
-Actions:
-
-- Examine Sales Trends: Determine if the high sales are due to temporary factors or if they indicate a sustainable trend.
-- Optimize Stock Management: Ensure these products are consistently in stock to capitalize on their high demand.
-- Replicate Success: Identify what drove the success and apply similar strategies to other products.
 
 
-#### 3. Aligned with the Linear Line
-
-Possible Reasons:
-
-- Model Accuracy: The model accurately captures the factors driving sales for these products.
-- Stable Demand: These products may have consistent and predictable demand.
-
-Actions:
-
-- Maintain Current Strategies: Continue with the current strategies that are working well.
-- Monitor for Changes: Keep an eye on any changes in trends that might affect these products in the future.
-
-
-<br><br>
-
-The plot shown above helps us identify areas where the model predictions are accurate and where they deviate from actual sales. However, we want to assign a critical score to items that significantly affect our revenue. By adjusting the size of the points, we can easily identify these key items.
-
-
-
-```{r, fig.width=10, fig.height=9, fig.align='center', message=FALSE, warning=FALSE}
+```{r, fig.width=10, fig.height=9, fig.align='center', message=FALSE, warning=FALSE, include = FALSE}
 ggplot(data_combined, aes(x = ordered_revenue_amount, y = predicted_revenue, size = ordered_revenue_amount, color = abs(ordered_revenue_amount - predicted_revenue))) +
   geom_point(alpha = 0.5) +
   geom_abline(slope = 1, intercept = 0, color = "red", linetype = "dashed") +
@@ -249,16 +274,19 @@ ggplot(data_combined, aes(x = ordered_revenue_amount, y = predicted_revenue, siz
   geom_text(data = data_combined %>% filter(ordered_revenue_amount < 20000 & predicted_revenue > 50000),
             aes(label = asin), size = 3, vjust = -1, color = "black") +
   geom_text(data = data_combined %>% filter(ordered_revenue_amount > 80000 & ordered_revenue_amount < 150000 & predicted_revenue < 50000),
-            aes(label = asin), size = 3, vjust = -1, color = "black")
+            aes(label = asin), size = 3, vjust = -1, color = "black") -> plot_actual_vs_predicted_revenue_critical
 ```
 
 <br>
 
+```{r, fig.width=10, fig.height=9, fig.align='center', message=FALSE, warning=FALSE}
+# Show the plot of Actual vs. Predicted Revenue with Critical Score by Actual Revenue
+plot_actual_vs_predicted_revenue_critical
+
+```
 
 
-Below are the final recommended products for further examination. Based on the data, these are products with high predicted revenue but low actual revenue and products with low predicted revenue but high actual revenue, significantly impacting overall revenue.
-
-I have categorized these into Focus Area 1 and Focus Area 2.
+Next, we categorized the products into two focus areas based on the plot criteria:
 
 - Focus Area 1: Products with high predicted revenue but low actual revenue. These products likely have potential, but something may be missing to maximize their profit.
 - Focus Area 2: Products with low predicted revenue but high actual revenue. We need to investigate why these products are performing better than predicted. Understanding the reasons behind their success can help replicate it for other products or minimize risks in the future.
@@ -266,7 +294,7 @@ I have categorized these into Focus Area 1 and Focus Area 2.
 <br>
 
 
-```{r}
+```{r, include = FALSE}
 
 # Filter the dataset based on the plot criteria
 filtered_data_high_predicted_low_actual <- data_combined %>%
@@ -292,9 +320,20 @@ segmented_data %>%
   mutate(week_ending = as.Date(week_ending)) %>%
   group_by(asin) %>%
   summarize(focus_area = first(focus_area), check_items = first(check_items)) %>% 
-  knitr::kable()
+  knitr::kable() -> segmented_data_table
 
 
 ```
+
+```{r}
+segmented_data_table
+```
+
+### Conclusion
+
+
+
+Based on the analysis of this dataset, we identified the key drivers by examining statistical indicators from the model, pinpointed products that are overperforming or underperforming, and segmented the products into two focus areas for further investigation. Using this approach, I recommend investing further in the following five products to maximize revenue by either boosting sales or preventing revenue decline.
+
 
 

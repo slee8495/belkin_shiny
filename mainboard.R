@@ -50,21 +50,18 @@ ui <- fluidPage(
                         fluidPage(
                           uiOutput("q2_content")
                         )),
-               tabPanel("3. Statistical Modeling", value = "chapter3",
+               tabPanel("3. Statistical Modeling & Story Telling", value = "q3",
                         fluidPage(
-                          uiOutput("chapter3_content")
+                          uiOutput("q3_content")
                         )),
-               tabPanel("4. Visualizations", value = "chapter4",
+               tabPanel("4. Additional Visualizations", value = "q4",
                         fluidPage(
-                          uiOutput("chapter4_content")
+                          uiOutput("q4_content")
                         ))
     ),
     navbarMenu("Bonus Questions",
-               tabPanel("1. Tableau", value = "bonus1",
-                        fluidPage(
-                          uiOutput("bonus1_content")
-                        )),
-               tabPanel("2. Automation Ideas", value = "bonus2",
+              
+               tabPanel("Automation Ideas", value = "bonus2",
                         fluidPage(
                           uiOutput("bonus2_content")
                         ))
@@ -137,6 +134,34 @@ server <- function(input, output, session) {
     file_name_2 <- "q2.html" 
     if (!is.null(file_name_2)) {
       tags$iframe(src = file_name_2, style = "width:100%; height:800px;")
+    }
+  })
+  
+  ############################################################################################################################
+  
+  output$q3_content <- renderUI({
+    file_name_3 <- "q3.html" 
+    if (!is.null(file_name_3)) {
+      tags$iframe(src = file_name_3, style = "width:100%; height:800px;")
+    }
+  })
+  
+  ############################################################################################################################
+  
+  output$q4_content <- renderUI({
+    file_name_4 <- "q4.html" 
+    if (!is.null(file_name_4)) {
+      tags$iframe(src = file_name_4, style = "width:100%; height:800px;")
+    }
+  })
+  
+  ############################################################################################################################
+  
+  
+  output$bonus2_content <- renderUI({
+    file_name_5 <- "Bonus2.html" 
+    if (!is.null(file_name_5)) {
+      tags$iframe(src = file_name_5, style = "width:100%; height:800px;")
     }
   })
   

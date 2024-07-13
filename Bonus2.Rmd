@@ -1,0 +1,37 @@
+---
+title: " "
+output:
+  html_document:
+  css: styles.css
+---
+
+```{css, echo=FALSE}
+body {
+  font-family: 'Verdana', sans-serif;
+}
+
+
+
+```
+
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+
+## How would you think of automation of this raw data in a tool of your choice before feeding it to a visualization tool
+
+<br> 
+
+If we can gain API access to the raw data from Amazon, we will be able to automate the data extraction process and integrate it into the solution I have suggested here. In this case, I will provide a quick solution to automate the creation of views for all visualizations and statistical model summaries developed in this case study by uploading the raw data, the provided XLSX case study file.
+
+If multiple data sets need to be sliced for hours of work, this simple web tool can also automate that process as well. 
+
+Please go to the link below and upload the XLSX file to see the automated views and summaries.
+<br>
+
+### [*Click*](https://business-analytics-slee.shinyapps.io/belkin_case_study/)
+
+
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
