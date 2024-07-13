@@ -61,7 +61,12 @@ ui <- fluidPage(
     ),
     navbarMenu("Bonus Questions",
               
-               tabPanel("Automation Ideas", value = "bonus2",
+               tabPanel("1. Tableau Link", value = "bonus1",
+                        fluidPage(
+                          uiOutput("bonus1_content")
+                        )),
+               
+               tabPanel("2. Automation Ideas", value = "bonus2",
                         fluidPage(
                           uiOutput("bonus2_content")
                         ))
@@ -155,13 +160,29 @@ server <- function(input, output, session) {
     }
   })
   
+  
+  ############################################################################################################################
+  
+  
+  output$bonus1_content <- renderUI({
+    file_name_5 <- "Bonus1.html" 
+    if (!is.null(file_name_5)) {
+      tags$iframe(src = file_name_5, style = "width:100%; height:800px;")
+    }
+  })
+  
+  ############################################################################################################################
+  
+  
+  
+  
   ############################################################################################################################
   
   
   output$bonus2_content <- renderUI({
-    file_name_5 <- "Bonus2.html" 
-    if (!is.null(file_name_5)) {
-      tags$iframe(src = file_name_5, style = "width:100%; height:800px;")
+    file_name_6 <- "Bonus2.html" 
+    if (!is.null(file_name_6)) {
+      tags$iframe(src = file_name_6, style = "width:100%; height:800px;")
     }
   })
   
