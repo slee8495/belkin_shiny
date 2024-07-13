@@ -22,7 +22,7 @@ body {
 
 <br> 
 
-Please click the link below to view the Tableau dashboard I created for this case study. The visuals in this link are fairly simple, replicating the visuals in the documents to demonstrate my ability to handle functions in Tableau as applied in this analysis.
+Please click below to view the Tableau dashboard I created for this case study. The visuals in this link are fairly simple, replicating the visuals in the documents to demonstrate my ability to handle functions in Tableau as applied in this analysis.
 
 
 
